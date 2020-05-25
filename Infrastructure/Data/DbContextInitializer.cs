@@ -10,8 +10,8 @@ namespace Infrastructure.Data
     {
         public static void Initialize(AppDataContext context)
         {
-            context.Database.EnsureCreated();
             context.Database.Migrate();
+            context.Database.EnsureCreated();
         }
     }
 }
