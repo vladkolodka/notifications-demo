@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace ApiServer
 {
+    using Infrastructure.Data;
+    using Microsoft.EntityFrameworkCore;
+
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -18,6 +21,10 @@ namespace ApiServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<AppDataContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+                    builder => builder.MigrationsAssembly("Infrastructure")));
+
             services.AddControllers();
         }
 
@@ -33,10 +40,7 @@ namespace ApiServer
 
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
