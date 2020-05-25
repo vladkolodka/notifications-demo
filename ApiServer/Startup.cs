@@ -6,6 +6,9 @@ using Microsoft.Extensions.Hosting;
 
 namespace ApiServer
 {
+    using ApplicationCore.Interfaces.Services;
+    using ApplicationCore.Services;
+    using ApplicationCore.Workers;
     using Infrastructure.Data;
     using Microsoft.EntityFrameworkCore;
 
@@ -24,6 +27,10 @@ namespace ApiServer
             services.AddDbContext<AppDataContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
                     builder => builder.MigrationsAssembly("Infrastructure")));
+
+            services.AddTransient<INotificationConsumer, RabbitMqNotificationConsumer>();
+            services.AddScoped<INotificationHandler, BasicNotificationHandler>();
+            services.AddHostedService<NotificationConsumerWorker>();
 
             services.AddControllers();
         }
