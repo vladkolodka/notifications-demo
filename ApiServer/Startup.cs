@@ -1,3 +1,4 @@
+using ApiServer.Hubs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,48 +7,63 @@ using Microsoft.Extensions.Hosting;
 
 namespace ApiServer
 {
-    using ApplicationCore.Interfaces.Services;
-    using ApplicationCore.Services;
-    using ApplicationCore.Workers;
-    using Infrastructure.Data;
-    using Microsoft.EntityFrameworkCore;
+	using ApplicationCore.Interfaces.Services;
+	using ApplicationCore.Services;
+	using ApplicationCore.Workers;
+	using Infrastructure.Data;
+	using Microsoft.EntityFrameworkCore;
 
-    public class Startup
-    {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+	public class Startup
+	{
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        public IConfiguration Configuration { get; }
+		public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddDbContext<AppDataContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
-                    builder => builder.MigrationsAssembly("Infrastructure")));
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddDbContext<AppDataContext>(options =>
+				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
+					builder => builder.MigrationsAssembly("Infrastructure")));
 
-            services.AddTransient<INotificationConsumer, RabbitMqNotificationConsumer>();
-            services.AddScoped<INotificationHandler, BasicNotificationHandler>();
-            services.AddHostedService<NotificationConsumerWorker>();
+			services.AddSignalR();
 
-            services.AddControllers();
-        }
+			services.AddTransient<INotificationConsumer, RabbitMqNotificationConsumer>();
+			services.AddScoped<INotificationHandler, BasicNotificationHandler>();
+			// services.AddHostedService<NotificationConsumerWorker>();
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
+			services.AddControllers();
+		}
 
-            app.UseRouting();
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
 
-            app.UseAuthorization();
+			app.UseCors(builder =>
+			{
+				// TODO
+				builder.WithOrigins("http://localhost:3000")
+					.AllowAnyHeader()
+					.WithMethods("GET", "POST")
+					.AllowCredentials();
+			});
 
-            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-        }
-    }
+			app.UseRouting();
+
+			app.UseAuthorization();
+
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllers();
+				endpoints.MapHub<NotificationHub>("/hub/notifications");
+			});
+		}
+	}
 }
