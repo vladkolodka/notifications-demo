@@ -5,4 +5,4 @@ services:
     image: ${DOCKER_REGISTRY-}apiserver
     build:
       context: .
-      dockerfile: ApiServer/Dockerfile
+      dockerfile: Server/Demo.ApiServer/Dockerfile
