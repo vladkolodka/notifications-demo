@@ -1,10 +1,11 @@
-﻿using Demo.Notifications.Models;
+﻿using System.Threading.Tasks;
+using Demo.Notifications.Models;
 
 namespace Demo.Notifications.Interfaces
 {
     public interface INotificationHandler
     {
 
-        void Handle(NotificationInfo notificationInfo);
+	    Task Handle(NotificationInfo notificationInfo);
     }
 }

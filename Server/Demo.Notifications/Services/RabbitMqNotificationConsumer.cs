@@ -16,6 +16,7 @@ namespace Demo.Notifications.Services
 		private readonly RabbitMqOptions _rabbitOptions;
 		private IModel _channel;
 		private IConnection _connection;
+		private bool _disposed = false;
 
 		public RabbitMqNotificationConsumer(IOptions<RabbitMqOptions> rabbitOptions)
 		{
@@ -67,8 +68,7 @@ namespace Demo.Notifications.Services
 
 		public async Task Stop()
 		{
-			_channel.Abort();
-			_connection.Abort();
+			Dispose();
 
 			await Task.Yield();
 		}
@@ -77,9 +77,24 @@ namespace Demo.Notifications.Services
 
 		public void Dispose()
 		{
-			// TODO fix
-			_channel?.Dispose();
-			_connection?.Dispose();
+			Dispose(true);
+			GC.SuppressFinalize(this);
+		}
+
+		protected virtual void Dispose(bool disposing)
+		{
+			if (_disposed)
+			{
+				return;
+			}
+
+			if (disposing)
+			{
+				_channel?.Dispose();
+				_connection?.Dispose();
+			}
+
+			_disposed = true;
 		}
 	}
 }

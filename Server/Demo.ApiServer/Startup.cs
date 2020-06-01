@@ -37,6 +37,7 @@ namespace Demo.ApiServer
 
 			services.AddSignalR();
 
+			services.AddTransient<INotificationSender, NotificationSender>();
 			services.AddTransient<INotificationConsumer, RabbitMqNotificationConsumer>();
 			services.AddScoped<INotificationHandler, BasicNotificationHandler>();
 			services.AddHostedService<NotificationConsumerWorker>();

@@ -5,6 +5,6 @@
     public interface INotificationSender
     {
         Task SendBroadcast(string message);
-        Task SendDirect(string from, string message);
+        Task SendDirect(string fromUser, string toUser, string message);
     }
 }
