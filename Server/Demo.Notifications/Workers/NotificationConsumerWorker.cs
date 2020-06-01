@@ -29,12 +29,11 @@
 
         private void OnNotificationReceivedHandler(object sender, NotificationReceivedEventArgs e)
         {
-            // TODO think about parallel handling : async
             using var scope = _scopeFactory.CreateScope();
 
             var notificationHandler = scope.ServiceProvider.GetService<INotificationHandler>();
 
-            notificationHandler.Handle(e.Message);
+            notificationHandler.Handle(e.Content);
         }
 
         public async Task StopAsync(CancellationToken cancellationToken)

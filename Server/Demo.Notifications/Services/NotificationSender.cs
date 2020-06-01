@@ -7,13 +7,16 @@
 
     public class NotificationSender : INotificationSender
     {
-        public NotificationSender(IHubContext<NotificationHub> hubContext)
-        {
-        }
+	    private readonly IHubContext<NotificationHub> _hubContext;
 
-        public Task SendBroadcast(string message)
+	    public NotificationSender(IHubContext<NotificationHub> hubContext)
+	    {
+		    _hubContext = hubContext;
+	    }
+
+        public async Task SendBroadcast(string message)
         {
-            throw new System.NotImplementedException();
+	        await _hubContext.Clients.All.SendAsync(NotificationHubMethods.ReceiveBroadcastNotification, message);
         }
 
         public Task SendDirect(string sender, string message)

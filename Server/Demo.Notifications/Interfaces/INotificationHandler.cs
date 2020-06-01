@@ -1,8 +1,10 @@
-﻿namespace Demo.Notifications.Interfaces
+﻿using Demo.Notifications.Models;
+
+namespace Demo.Notifications.Interfaces
 {
     public interface INotificationHandler
     {
 
-        void Handle(string message);
+        void Handle(NotificationInfo notificationInfo);
     }
 }

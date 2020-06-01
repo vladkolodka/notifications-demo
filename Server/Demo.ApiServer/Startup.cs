@@ -1,3 +1,4 @@
+using Demo.Infrastructure.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +26,11 @@ namespace Demo.ApiServer
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			// var a = Configuration["Notifications:RabbitMq"];
+			services.AddOptions();
+
+			services.Configure<RabbitMqOptions>(Configuration.GetSection("Notifications:RabbitMq"));
+
 			services.AddDbContext<AppDataContext>(options =>
 				options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"),
 					builder => builder.MigrationsAssembly(typeof(AppDataContext).Assembly.GetName().Name)));
