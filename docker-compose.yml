@@ -1,8 +1,8 @@
 version: '3.4'
 
 services:
-  apiserver:
-    image: ${DOCKER_REGISTRY-}apiserver
+  demo.apiserver:
+    image: ${DOCKER_REGISTRY-}demoapiserver
     build:
       context: .
       dockerfile: Server/Demo.ApiServer/Dockerfile

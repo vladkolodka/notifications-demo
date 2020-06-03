@@ -11,6 +11,7 @@ namespace Demo.Notifications.Hubs
 
 		public override async Task OnConnectedAsync()
 		{
+			// TODO add user to group here
 //			await Clients.Caller.SendAsync(ClientMethods.ReceiveNotification.ToString(), new NotificationDto
 //            {
 //				From = "Server",

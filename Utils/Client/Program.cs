@@ -23,6 +23,7 @@ namespace Client
 			{
 				channel.ExchangeDeclare(exchange: "notifications", type: ExchangeType.Topic);
 
+				// TODO serialize NotificationContent model
 				var message = "test message";
 				var body = Encoding.UTF8.GetBytes(message);
 				channel.BasicPublish(exchange: "notifications", routingKey: routingKey, basicProperties: null, body: body);

@@ -7,9 +7,12 @@ let connection = new signalR.HubConnectionBuilder()
     .withUrl(`${config.apiUrl}/hub/notifications`)
     .build();
 
+// TODO change method name
 connection.on("ReceiveNotification", (...all) => {
     console.log(all);
 });
+
+// TODO subscribe to broadcast/direct notifications
 
 connection.start();
     // .then(() => connection.invoke("send", "Hello"));
